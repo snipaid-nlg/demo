@@ -11,7 +11,7 @@ If you choose to deploy manually with the help of the Netlify Command Line Inter
 
 *Unsure which one fits your needs best? Here are some aspects to consider*
 
-| Manual deploy                                  	| Automatic deploy from GitHub                                               	|
+| Manual deploy with Netlify CLI                  	| Automatic deploy from GitHub with Netlify Web UI                           	|
 |:-----------------------------------------------	|:---------------------------------------------------------------------------	|
 | <ul><li>CLI usage required for both Git and Netlify</li><li>Needs manual deploy to update the site</li><li>Allows for private repository</li></ul> | <ul><li>Requires Web Interface interactions only</li><li>Site automatically updates with commits to the repository</li><li>Repository needs to be public to host site with Netlify on the free plan</li></ul>  	|
 
