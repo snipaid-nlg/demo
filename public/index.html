@@ -72,6 +72,15 @@
                 </div>
                 <div id="collapseWebhook" class="collapse" aria-labelledby="headingWebhook" data-bs-parent="#accordion">
                   <div class="card-body">
+                    <p>
+                      SnipAId can notify a personal endpoint with the results once generated.<br/>
+                      Results will be provided as JSON body in the following format.
+                    </p>
+                    <pre><code>{
+  fulltext: ...,
+  title: ...,
+  teaser: ...,
+}</code></pre>
                     <input class="form-control mt-3" id="webhookInput" type="URL" rows="1" placeholder="Enter the url of your webhook endpoint..." required></input>
                     <button class="btn btn-primary mt-3" type="button" id="sendToWebhook" disabled>Send</button>
                   </div>
