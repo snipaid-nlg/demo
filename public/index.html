@@ -46,9 +46,18 @@
           <p id="waitedSeconds" class="text-secondary"><small><i>Please note: Text generation can take up to 1 minute.</i></small></p>
         </div>
         <div id="resultDiv" class="d-none">
-          <h3 id="resHeadline"></h3>
-          <div id="resTeasers"></div>
-          <p id="resTeaser" class="lead"></p>
+            <div class="form-group row mb-3">
+              <label for="resHeadline" class="col-sm-1 col-form-label col-form-label-lg">Title</label>
+              <div class="col-sm-11">
+                <input class="form-control form-control-lg" id="resHeadline" placeholder="col-form-label-lg">
+              </div>
+            </div>
+            <div class="form-group row mb-3">
+              <label for="resTeaser" class="col-sm-1 col-form-label col-form-label">Teaser</label>
+              <div class="col-sm-11">
+                <input class="form-control form-control" id="resTeaser">
+              </div>
+            </div>
         </div>
         <!-- Github References -->
         <section>

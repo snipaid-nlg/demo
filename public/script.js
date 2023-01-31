@@ -26,7 +26,7 @@ window.onload = function () {
         loadingDiv.classList.remove("d-none");
         submitText.classList.add("d-none");
       } else if (isHeadlineLoaded && isTeaserLoaded) {
-        loadingDiv.classList.add("d-none")
+        loadingDiv.classList.add("d-none");
         submitText.classList.remove("d-none");
       }
     }
@@ -34,7 +34,7 @@ window.onload = function () {
     function updateHeadline(headline) {
       console.log("Got title:", headline);
       isHeadlineLoaded = true;
-      resHeadline.innerText = headline;
+      resHeadline.value = headline;
       setLoading(false);
       resultDiv.classList.remove('d-none')
     }
@@ -42,7 +42,7 @@ window.onload = function () {
     var updateTeaser = (teaser) => {
       console.log("Got teaser:", teaser);
       isTeaserLoaded = true;
-      resTeaser.innerText = teaser;
+      resTeaser.value = teaser;
       setLoading(false);
       resultDiv.classList.remove('d-none')
     }
