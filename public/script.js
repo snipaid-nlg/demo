@@ -6,6 +6,8 @@ window.onload = function () {
     var resultDiv = document.getElementById('resultDiv');
     var resTeaser = document.getElementById('resTeaser');
     var resHeadline = document.getElementById('resHeadline');
+    var webhookInput = document.getElementById('webhookInput')
+    var sendToWebhook = document.getElementById('sendToWebhook')
     console.log('resultDiv', resultDiv)
 
     consent.addEventListener('change', (event) => {
@@ -116,6 +118,35 @@ window.onload = function () {
         checkResult(data.callID, "teaser")
       } catch (err) {
         //textBlock.innerHTML = "Sorry the request failed"
+      }
+    })
+
+    webhookInput.addEventListener('change', (event) => {
+      console.log('event', event)
+      if (event.currentTarget.validity.valid) {
+        sendToWebhook.disabled = false;
+      } else {
+        sendToWebhook.disabled = true;
+      }
+    })
+
+    sendToWebhook.addEventListener('click', async (event) => {
+      const endpoint = webhookInput.value;
+      const webhookResponse = await fetch(endpoint,
+          {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: "POST",
+            body: JSON.stringify({
+              "fulltext": articleInput.value,
+              "title": resHeadline.value,
+              "teaser": resTeaser.value
+            })
+        });
+
+      if (webhookResponse.status != 200){
+        //TODO: Implement exponential backoff
       }
     })
   }
