@@ -70,7 +70,7 @@ window.onload = function () {
       const timeout = 10000
       if (response.status == 500) {
         // Try again in a few seconds
-        console.log(`Attempt retry in ${timeout%1000} seconds...`);
+        console.log(`Attempt retry in ${timeout / 1000} seconds...`);
         setTimeout(checkResult, timeout, callID, genType); 
       } else {
         // Periodically check for results
@@ -81,7 +81,7 @@ window.onload = function () {
           update(data.output, genType)
         } else {
           // check again after timeout
-          console.log(`Still Processing... check again in ${timeout%1000} seconds...`);
+          console.log(`Still Processing... check again in ${timeout / 1000} seconds...`);
           setTimeout(checkResult, timeout, callID, genType); 
         }
       }
