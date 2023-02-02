@@ -9,10 +9,8 @@ window.onload = function () {
   var webhookInput = document.getElementById('webhookInput')
   var sendToWebhook = document.getElementById('sendToWebhook')
   var webhookStatus = document.getElementById('webhookStatus')
-  console.log('resultDiv', resultDiv)
 
   consent.addEventListener('change', (event) => {
-    console.log('event', event.currentTarget.checked)
     if (event.currentTarget.checked) {
       submitText.disabled = false;
     } else {
@@ -22,6 +20,7 @@ window.onload = function () {
 
   var isHeadlineLoaded = false;
   var isTeaserLoaded = false;
+
   var setLoading = function (to) {
     if (to) {
       isHeadlineLoaded = false;
@@ -35,7 +34,7 @@ window.onload = function () {
   }
 
   function updateHeadline(headline) {
-    console.log("Got title:", headline);
+    console.log("Generated title:", headline);
     isHeadlineLoaded = true;
     resHeadline.value = headline;
     setLoading(false);
@@ -43,7 +42,7 @@ window.onload = function () {
   }
 
   var updateTeaser = (teaser) => {
-    console.log("Got teaser:", teaser);
+    console.log("Generated teaser:", teaser);
     isTeaserLoaded = true;
     resTeaser.value = teaser;
     setLoading(false);
@@ -91,7 +90,7 @@ window.onload = function () {
   }
 
   submitText.addEventListener('click', async (event) => {
-    console.log('event', 'articleInput', articleInput.value)
+    console.log('Received article input:', articleInput.value)
     setLoading(true);
     resultDiv.classList.add('d-none')
 
@@ -123,7 +122,6 @@ window.onload = function () {
   })
 
   webhookInput.addEventListener('change', (event) => {
-    console.log('event', event)
     if (event.currentTarget.validity.valid) {
       sendToWebhook.disabled = false;
     } else {
