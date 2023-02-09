@@ -1,4 +1,4 @@
-# Demo Netlify
+# Demo
 
 You want to host the SnipAId Web GUI with Netlify? Read on...
 
