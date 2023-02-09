@@ -4,7 +4,7 @@ You want to host the SnipAId Web GUI with Netlify? Read on...
 
 ## How to get started
 
-The following tutorials assume, that you successfully deployed the model gptj-title-teaser-10k and have the model server up and running. If not, please refer to the tutorial in the [model-server](https://github.com/snipaid-nlg/model-server) repository.
+The following tutorials assume, that you successfully deployed the model and have the model server up and running. If not, please refer to the tutorial in the [model-server](https://github.com/snipaid-nlg/model-server) repository.
 
 If you choose to deploy this demo from Github with the Netlify Web User Interface (UI) and automatic build support read on [here](https://github.com/snipaid-nlg/demo-netlify#deploying-from-github-with-the-netlify-ui). \
 If you choose to deploy manually with the help of the Netlify Command Line Interface (CLI) skip to [this section](https://github.com/snipaid-nlg/demo-netlify#deploying-manually-with-the-netlify-cli).
@@ -28,7 +28,7 @@ If you choose to deploy manually with the help of the Netlify Command Line Inter
 6. Make sure publish directory is set to ```public``` (should be the default).
 7. Hit the "Show advanced button" to set Environment Variables. 
 
-    > Note: Running the demo requires 2 keys for accessing the model. If not already done, follow the tutorial on How to setup the model server in the repository [gptj-title-  teaser-10k](https://github.com/snipaid-nlg/gptj-title-teaser-10k) to get your keys.
+    > Note: Running the demo requires 2 keys for accessing the model. If not already done, follow the tutorial on How to setup the model server in the repository [model-server](https://github.com/snipaid-nlg/model-server) to get your keys.
 
   - Klick the button "New Variable" and add the key ```BANANA_API_KEY``` with value ```InsertYourSecretBananaAPIKeyHere```.
   - Klick the button "New Variable" and add the Key ```BANANA_MODEL_KEY``` with value ```InsertYourSecretBananaModelKeyHere```.
