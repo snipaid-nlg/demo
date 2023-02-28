@@ -9,6 +9,7 @@ window.onload = function () {
   var webhookInput = document.getElementById('webhookInput')
   var sendToWebhook = document.getElementById('sendToWebhook')
   var webhookStatus = document.getElementById('webhookStatus')
+  var model = document.getElementById('model')
 
   // Add event listener to consent checkbox
   consent.addEventListener('change', (event) => {
@@ -94,20 +95,30 @@ window.onload = function () {
     }
   }
 
+  // Generation with different model
+  var generate = (fulltext, genType, model) => {
+    if (model === "gptj") {
+      return fetch('/.netlify/functions/generate-gptj?' + new URLSearchParams({
+        "fulltext": fulltext,
+        "gen_type": genType
+      }))
+    } else if (model === "bloomz") {
+      return fetch('/.netlify/functions/generate-bloomz?' + new URLSearchParams({
+        "fulltext": fulltext,
+        "gen_type": genType
+      }))
+    }
+  }
+
   // Trigger snippet generation process on text submit
   submitText.addEventListener('click', async (event) => {
     console.log('Received article input:', articleInput.value)
     setLoading(true);
     resultDiv.classList.add('d-none')
 
-    let prompts = []
-
     try {
       console.log("Generate title...")
-      const headlineResponse = await fetch('/.netlify/functions/generate?' + new URLSearchParams({
-        "fulltext": articleInput.value,
-        "gen_type": "headline"
-      }))
+      const headlineResponse = await generate(articleInput.value, "headline", model.value);
       const data = await headlineResponse.json()
       checkResult(data.callID, "headline")
     } catch (err) {
@@ -116,10 +127,7 @@ window.onload = function () {
 
     try {
       console.log("Generate teaser...")
-      const teaserResponse = await fetch('/.netlify/functions/generate?' + new URLSearchParams({
-        "fulltext": articleInput.value,
-        "gen_type": "teaser"
-      }))
+      const teaserResponse = await generate(articleInput.value, "teaser", model.value);
       const data = await teaserResponse.json()
       checkResult(data.callID, "teaser")
     } catch (err) {
