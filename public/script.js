@@ -10,6 +10,7 @@ window.onload = function () {
   var sendToWebhook = document.getElementById('sendToWebhook')
   var webhookStatus = document.getElementById('webhookStatus')
 
+  // Add event listener to consent checkbox
   consent.addEventListener('change', (event) => {
     if (event.currentTarget.checked) {
       submitText.disabled = false;
@@ -18,9 +19,11 @@ window.onload = function () {
     }
   }, false);
 
+  // Initialize loading state variables for headline and teaser
   var isHeadlineLoaded = false;
   var isTeaserLoaded = false;
 
+  // Setter for loading indicator
   var setLoading = function (to) {
     if (to) {
       isHeadlineLoaded = false;
@@ -33,6 +36,7 @@ window.onload = function () {
     }
   }
 
+  // Functions updating snippet fields
   function updateHeadline(headline) {
     console.log("Generated title:", headline);
     isHeadlineLoaded = true;
@@ -62,6 +66,7 @@ window.onload = function () {
     }
   }
 
+  // Function to check generation results
   var checkResult = async (callID, genType) => {
     const response = await fetch('/.netlify/functions/check?' + new URLSearchParams({
       "id": callID,
@@ -89,6 +94,7 @@ window.onload = function () {
     }
   }
 
+  // Trigger snippet generation process on text submit
   submitText.addEventListener('click', async (event) => {
     console.log('Received article input:', articleInput.value)
     setLoading(true);
@@ -121,7 +127,9 @@ window.onload = function () {
     }
   })
 
+  //Webhook url valididty check
   webhookInput.addEventListener('change', (event) => {
+    //Disables webhook send button as long as entered url is invalid
     if (event.currentTarget.validity.valid) {
       sendToWebhook.disabled = false;
     } else {
@@ -132,7 +140,7 @@ window.onload = function () {
   // Default: Webhook status alert is hidden
   $("#webhookStatus").hide()
 
-  // Alert webhook status with regards to HTTP status code
+  // Indicate webhook status with regards to HTTP status code
   const alertWebhookStatus = (status) => {
     if (status / 100 == 2){
       // HTTP 2xx successful
@@ -149,6 +157,7 @@ window.onload = function () {
     $("#webhookStatus").fadeIn().delay(3000).fadeOut();
   }
 
+  // Send data to webhook url
   sendToWebhook.addEventListener('click', async (event) => {
     const endpoint = webhookInput.value;
     const response = await fetch(endpoint,
