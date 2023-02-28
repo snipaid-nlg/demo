@@ -32,14 +32,15 @@
             <option>gptj</option>
           </select>
           <div class="alert alert-danger" role="alert">
-            Warning! This demo is for test use only. The model can produce false information. Read more about the limitations 
-            <a href="https://www.eleuther.ai/faq/" target="_blank">here</a>.
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="consent">
-            <label class="form-check-label" for="consent">
-              I have understood that this model can produce false information. I will not use the generated text without fact checking.
-            </label>
+            <div class="mb-1">
+              Warning! Generative AI can produce false information. We recommend having a human fact-check the outputs before releasing them.
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="consent">
+              <label class="form-check-label fst-italic" for="consent">
+                I have understood that this model can produce false information. I will not use the generated text without fact checking.
+              </label>
+            </div>
           </div>
           <button class="btn btn-primary mt-4" type="button" id="submitText" disabled>Please generate title and teaser!</button>
         </form>
