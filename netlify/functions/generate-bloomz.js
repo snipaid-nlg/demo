@@ -65,7 +65,7 @@ export const handler = async (event, context, callback) => {
     genType = event.queryStringParameters["gen_type"];
 
     modelInputs = templates[genType];
-    modelInputs["fulltext"] = fulltext;
+    modelInputs["document"] = fulltext;
 
     // run banana api call to queue task
     const model_response = await fetch("https://api.banana.dev/start/v4",
