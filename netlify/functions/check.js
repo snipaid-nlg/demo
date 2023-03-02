@@ -1,9 +1,10 @@
 import fetch from 'node-fetch'
 
 export const handler = async (event, context, callback) => {
-    var callID, genType, output;
+    var callID, genType, output, model;
     callID = event.queryStringParameters["id"];
     genType = event.queryStringParameters["gen_type"];
+    model = event.queryStringParameters["model"];
     const model_response = await fetch("https://api.banana.dev/check/v4",
         {
             headers: {
@@ -21,7 +22,7 @@ export const handler = async (event, context, callback) => {
     if (out.message == "success") {
         // handle successful response
         output = out['modelOutputs'][0]['output'];
-        output = cleanOutput(output, genType)
+        output = cleanOutput(output, genType, model);
 
         // Send response
         response = {
@@ -44,23 +45,30 @@ export const handler = async (event, context, callback) => {
     return response
 }
 
-const cleanOutput = (output, genType) => {
-    // Specific text cleaning for headlines
-    if (genType == 'headline') {
-        output = output.split("[Titel]:")[1];
+const cleanOutput = (output, genType, model) => {
+    // General text cleaning
+    output = output.replace('\n', ' ');
+    output = output.replaceAll('\s\s', '\s');
+    // Model and snippet sepcific cleaning
+    if (genType === "headline") {
+        if (model === "gptj") {
+          // GPT-J specific cleaning
+          output = output.split("[Titel]:")[1];
+        }
+        // Generic cleaning
         output = output.split('\n')[0];
         output = output.split('.')[0];
         output = output.split('?')[0];
         output = output.split('!')[0];
-    } else if (genType == 'teaser') {
-        // Specific text cleaning for teasers
-        output = output.split("[Teaser]:")[1];
+      } else if (genType === "teaser") {
+        if (model === "gptj") {
+          // GPT-J specific cleaning
+          output = output.split("[Teaser]:")[1];
+        }
         output = output.split('.').slice(0, -1).join(".");
         output += '.';
-    }
-    //General text cleaning
-    output = output.replace('\n', ' ');
-    output = output.replaceAll('\s\s', '\s');
+      }
+    // General text cleaning
     output = output.trim();
     return output
 }
