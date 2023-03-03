@@ -9,6 +9,7 @@ window.onload = function () {
   var webhookInput = document.getElementById('webhookInput')
   var sendToWebhook = document.getElementById('sendToWebhook')
   var webhookStatus = document.getElementById('webhookStatus')
+  var model = document.getElementById('model')
 
   // Add event listener to consent checkbox
   consent.addEventListener('change', (event) => {
@@ -67,10 +68,11 @@ window.onload = function () {
   }
 
   // Function to check generation results
-  var checkResult = async (callID, genType) => {
+  var checkResult = async (callID, genType, model) => {
     const response = await fetch('/.netlify/functions/check?' + new URLSearchParams({
       "id": callID,
       "gen_type": genType,
+      "model": model
     })
     );
     // Set timeout for retries here
@@ -78,7 +80,7 @@ window.onload = function () {
     if (!response.ok) {
       // Try again in a few seconds
       console.log(`Still generating... check again in ${timeout / 1000} seconds...`);
-      setTimeout(checkResult, timeout, callID, genType);
+      setTimeout(checkResult, timeout, callID, genType, model);
     } else {
       // Periodically check for results
       const data = await response.json();
@@ -89,8 +91,23 @@ window.onload = function () {
       } else {
         // check again after timeout
         console.log(`Not finished yet... check again in ${timeout / 1000} seconds...`);
-        setTimeout(checkResult, timeout, callID, genType);
+        setTimeout(checkResult, timeout, callID, genType, model);
       }
+    }
+  }
+
+  // Generation with different model
+  var generate = (fulltext, genType, model) => {
+    if (model === "gptj") {
+      return fetch('/.netlify/functions/generate-gptj?' + new URLSearchParams({
+        "fulltext": fulltext,
+        "gen_type": genType
+      }))
+    } else if (model === "bloomz") {
+      return fetch('/.netlify/functions/generate-bloomz?' + new URLSearchParams({
+        "fulltext": fulltext,
+        "gen_type": genType
+      }))
     }
   }
 
@@ -100,28 +117,20 @@ window.onload = function () {
     setLoading(true);
     resultDiv.classList.add('d-none')
 
-    let prompts = []
-
     try {
       console.log("Generate title...")
-      const headlineResponse = await fetch('/.netlify/functions/generate?' + new URLSearchParams({
-        "fulltext": articleInput.value,
-        "gen_type": "headline"
-      }))
+      const headlineResponse = await generate(articleInput.value, "headline", model.value);
       const data = await headlineResponse.json()
-      checkResult(data.callID, "headline")
+      checkResult(data.callID, "headline", model.value)
     } catch (err) {
       //textBlock.innerHTML = "Sorry the request failed"
     }
 
     try {
       console.log("Generate teaser...")
-      const teaserResponse = await fetch('/.netlify/functions/generate?' + new URLSearchParams({
-        "fulltext": articleInput.value,
-        "gen_type": "teaser"
-      }))
+      const teaserResponse = await generate(articleInput.value, "teaser", model.value);
       const data = await teaserResponse.json()
-      checkResult(data.callID, "teaser")
+      checkResult(data.callID, "teaser", model.value)
     } catch (err) {
       //textBlock.innerHTML = "Sorry the request failed"
     }
