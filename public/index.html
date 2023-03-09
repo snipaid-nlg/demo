@@ -143,6 +143,12 @@
           <p>This is a GPT-J model we finetuned from GPT-J-6B-8bit on 10.000 German News Articles, balanced by 10 news categories and randomized over different news publishers and multiple years. You can download the PyTorch model checkpoints <a href="https://huggingface.co/snipaid/gptj-title-teaser-10k" class="link-dark">here</a>. To run the model you need ~11 GB GPU memory.</p>
           <h5>bloomz</h5>
           <p>This is a model from the BLOOMZ series of models capable of following human instructions in dozens of languages in a zero-shot setting. Specific prompts were designed for snippet generation. German language is supported by means of translation. You can download the model <a href="https://miro.com/app/board/uXjVPuvw7NQ=/?moveToWidget=3458764548383030018&cot=14" class="link-dark">here</a>. To run the model you need ~8 GB GPU memory.</p>
+          <h4>Limitations</h4>
+          <h5>Generation specific</h5>
+          <p>When generating text with these models please keep in mind, that the statistically most likely next token is often not the token that produces the most "accurate" text. Never depend upon those models to produce factually accurate output! We recommend having a human curate or filter the outputs before releasing them, both to censor undesirable content and to improve the quality of the results. See also <a href="https://huggingface.co/EleutherAI/gpt-j-6B#limitations-and-biases" class="link-dark">limitations and biases</a> of GPT-J.</p>
+          <h5>Translation specific</h5>
+          <p>Since the bloomz model does not natively support German, we translate the input text into English, generate and translate the model output back into German. For this reason, in addition to the limitations of generation, translation errors may occasionally occur when using this model. Those occur mainly when translating product and company names.</p>
+        </section>
 ​        <!-- Footer -->
         <footer class="mb-5 text-muted text-center text-small">
           <hr class="mt-4 pb-5" />
