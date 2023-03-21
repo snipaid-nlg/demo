@@ -6,6 +6,13 @@ window.onload = function () {
   var resultDiv = document.getElementById('resultDiv');
   var resTeaser = document.getElementById('resTeaser');
   var resHeadline = document.getElementById('resHeadline');
+  var resSummary = document.getElementById('resSummary');
+  var resKeywords = document.getElementById('resKeywords');
+  var headlineDiv = document.getElementById('headlineDiv');
+  var teaserDiv = document.getElementById('teaserDiv');
+  var summaryDiv = document.getElementById('summaryDiv');
+  var keywordsDiv = document.getElementById('keywordsDiv');
+  var webhookDiv = document.getElementById('accordion')
   var webhookInput = document.getElementById('webhookInput')
   var sendToWebhook = document.getElementById('sendToWebhook')
   var webhookStatus = document.getElementById('webhookStatus')
@@ -20,20 +27,52 @@ window.onload = function () {
     }
   }, false);
 
+  // Add event listener for model change
+  model.addEventListener('change', (event) => {
+    console.log("Selected model:", model.value)
+    headlineDiv.classList.add("d-none");
+    teaserDiv.classList.add("d-none");
+    summaryDiv.classList.add("d-none");
+    keywordsDiv.classList.add("d-none");
+    webhookDiv.classList.add("d-none");
+  })
+
   // Initialize loading state variables for headline and teaser
   var isHeadlineLoaded = false;
   var isTeaserLoaded = false;
+  var isKeywordsLoaded = false;
+  var isSummaryLoaded = false;
 
-  // Setter for loading indicator
-  var setLoading = function (to) {
-    if (to) {
+  var setLoading = function(isLoading) {
+    if (isLoading) {
+      // Set loading indicators
       isHeadlineLoaded = false;
       isTeaserLoaded = false;
+      isKeywordsLoaded = false;
+      isSummaryLoaded = false;
+      if (model.value == 'gptj') {
+        // Set loading indicators for snippets not supported with gptj to true for evaluation
+        isKeywordsLoaded = true;
+        isSummaryLoaded = true;
+      }
+      // Show loading div
       loadingDiv.classList.remove("d-none");
+      // Hide snippet divs, webhook and submit button
+      headlineDiv.classList.add("d-none");
+      teaserDiv.classList.add("d-none");
+      summaryDiv.classList.add("d-none");
+      keywordsDiv.classList.add("d-none");
+      webhookDiv.classList.add("d-none");
       submitText.classList.add("d-none");
-    } else if (isHeadlineLoaded && isTeaserLoaded) {
-      loadingDiv.classList.add("d-none");
-      submitText.classList.remove("d-none");
+    } else {
+      // Evaluate: Is generation done?
+      if (isHeadlineLoaded && isTeaserLoaded && isKeywordsLoaded && isSummaryLoaded) {
+        // Generation is done, hide laoding indicator
+        loadingDiv.classList.add("d-none");
+        // Show webhook and allow new text submission
+        webhookDiv.classList.remove("d-none");
+        submitText.classList.remove("d-none");
+      }
     }
   }
 
@@ -43,7 +82,7 @@ window.onload = function () {
     isHeadlineLoaded = true;
     resHeadline.value = headline;
     setLoading(false);
-    resultDiv.classList.remove('d-none')
+    headlineDiv.classList.remove('d-none')
   }
 
   var updateTeaser = (teaser) => {
@@ -51,7 +90,23 @@ window.onload = function () {
     isTeaserLoaded = true;
     resTeaser.value = teaser;
     setLoading(false);
-    resultDiv.classList.remove('d-none')
+    teaserDiv.classList.remove('d-none')
+  }
+
+  var updateSummary = (summary) => {
+    console.log("Generated summary:", summary);
+    isSummaryLoaded = true;
+    resSummary.value = summary;
+    setLoading(false);
+    summaryDiv.classList.remove('d-none')
+  }
+
+  var updateKeywords = (keywords) => {
+    console.log("Generated keywords:", keywords);
+    isKeywordsLoaded = true;
+    resKeywords.value = keywords;
+    setLoading(false);
+    keywordsDiv.classList.remove('d-none')
   }
 
   var update = (output, genType) => {
@@ -61,6 +116,12 @@ window.onload = function () {
         break;
       case 'teaser':
         updateTeaser(output)
+        break;
+      case 'summary':
+        updateSummary(output)
+        break;
+      case 'keywords':
+        updateKeywords(output)
         break;
       default:
         console.log(`Sorry, the snippet type ${genType} is not supported.`);
@@ -115,7 +176,6 @@ window.onload = function () {
   submitText.addEventListener('click', async (event) => {
     console.log('Received article input:', articleInput.value)
     setLoading(true);
-    resultDiv.classList.add('d-none')
 
     try {
       console.log("Generate title...")
@@ -133,6 +193,26 @@ window.onload = function () {
       checkResult(data.callID, "teaser", model.value)
     } catch (err) {
       //textBlock.innerHTML = "Sorry the request failed"
+    }
+
+    if (model.value === 'bloomz') {
+      try {
+        console.log("Generate summary...")
+        const summaryResponse = await generate(articleInput.value, "summary", model.value);
+        const data = await summaryResponse.json()
+        checkResult(data.callID, "summary", model.value)
+      } catch (err) {
+        //textBlock.innerHTML = "Sorry the request failed"
+      }
+  
+      try {
+        console.log("Generate keywords...")
+        const keywordResponse = await generate(articleInput.value, "keywords", model.value);
+        const data = await keywordResponse.json()
+        checkResult(data.callID, "keywords", model.value)
+      } catch (err) {
+        //textBlock.innerHTML = "Sorry the request failed"
+      }
     }
   })
 

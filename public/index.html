@@ -42,7 +42,7 @@
               </label>
             </div>
           </div>
-          <button class="btn btn-primary mt-4" type="button" id="submitText" disabled>Please generate title and teaser!</button>
+          <button class="btn btn-primary mt-4" type="button" id="submitText" disabled>Please generate!</button>
         </form>
         <!-- Snippet Results-->
         <hr class="mt-5 pb-4" />
@@ -52,22 +52,34 @@
           </div>
           <p id="waitedSeconds" class="text-secondary"><small><i>Please note: Text generation can take up to 1 minute.</i></small></p>
         </div>
-        <div id="resultDiv" class="d-none">
+        <div id="resultDiv">
           <form action="/webhook" method="GET" role="search" id="searchForm">
-            <div class="form-group row mb-3">
+            <div id="headlineDiv" class="form-group row mb-3 d-none">
               <label for="resHeadline" class="col-sm-1 col-form-label col-form-label-lg">Title</label>
               <div class="col-sm-11">
                 <textarea class="form-control form-control-lg" id="resHeadline" rows="1"></textarea>
               </div>
             </div>
-            <div class="form-group row mb-3">
+            <div id="teaserDiv" class="form-group row mb-3 d-none">
               <label for="resTeaser" class="col-sm-1 col-form-label col-form-label">Teaser</label>
               <div class="col-sm-11">
                 <textarea class="form-control form-control" id="resTeaser" rows="3"></textarea>
               </div>
             </div>
+            <div id="summaryDiv" class="form-group row mb-3 d-none">
+              <label for="resSummary" class="col-sm-1 col-form-label col-form-label">Summary</label>
+              <div class="col-sm-11">
+                <textarea class="form-control form-control" id="resSummary" rows="3"></textarea>
+              </div>
+            </div>
+            <div id="keywordsDiv" class="form-group row mb-3 d-none">
+              <label for="resKeywords" class="col-sm-1 col-form-label col-form-label">Keywords</label>
+              <div class="col-sm-11">
+                <textarea class="form-control form-control" id="resKeywords" rows="1"></textarea>
+              </div>
+            </div>
             <!-- Webhook -->
-            <div id="accordion" class="mb-3">
+            <div id="accordion" class="mb-3 d-none">
               <div class="card">
                 <div class="card-header" id="headingWebhook">
                   <h5 class="mb-0">
