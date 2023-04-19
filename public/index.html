@@ -28,6 +28,7 @@
           </div>
           <label for="model" class="form-label mt-1">Choose your model from the list:</label>
           <select class="form-select mb-3" id="model">
+            <option>snip-igel</option>
             <option>bloomz</option>
             <option>gptj</option>
           </select>
@@ -46,11 +47,11 @@
         </form>
         <!-- Snippet Results-->
         <hr class="mt-5 pb-4" />
-        <div class="d-none mb-3" id="loadingDiv">
+        <div class="d-none mb-5" id="loadingDiv">
           <div class="spinner-grow text-secondary" role="status">
             <span class="visually-hidden">Loading...</span>
           </div>
-          <p id="waitedSeconds" class="text-secondary"><small><i>Please note: Text generation can take up to 1 minute.</i></small></p>
+          <p id="waitedSeconds" class="text-secondary"><small><i>Please note: Text generation can take up to a minute. </br> If the model has not been used for a while loading it takes 1-3 minutes.</i></small></p>
         </div>
         <div id="resultDiv">
           <form action="/webhook" method="GET" role="search" id="searchForm">
@@ -76,6 +77,28 @@
               <label for="resKeywords" class="col-sm-1 col-form-label col-form-label">Keywords</label>
               <div class="col-sm-11">
                 <textarea class="form-control form-control" id="resKeywords" rows="1"></textarea>
+              </div>
+            </div>
+            <div id="serpDiv" class="ml-3 mt-3 d-none">
+              <div class="my-4"><h5>Search Engine Result Page</h5></div>
+              <div id="serpTitleDiv" class="form-group row mb-3">
+                <label for="resSerpTitle" class="col-sm-1 col-form-label col-form-label">Titel</label>
+                <div class="col-sm-11">
+                  <textarea class="form-control form-control" id="resSerpTitle" rows="1"></textarea>
+                </div>
+              </div>
+              <div id="serpDescriptionDiv" class="form-group row mb-3">
+                <label for="resSerpDescription" class="col-sm-1 col-form-label col-form-label">Description</label>
+                <div class="col-sm-11">
+                  <textarea class="form-control form-control" id="resSerpDescription" rows="3"></textarea>
+                </div>
+              </div>
+            </div>
+            <div id="tweetDiv" class="form-group row mb-5 d-none">
+              <div class="mt-1 mb-3"><h5>Social Media</h5></div>
+              <label for="resTweet" class="col-sm-1 col-form-label col-form-label">Twitter</label>
+              <div class="col-sm-11">
+                <textarea class="form-control form-control" id="resTweet" rows="3"></textarea>
               </div>
             </div>
             <!-- Webhook -->
@@ -137,8 +160,8 @@
             <div class="col-sm-4">
               <div class="card">
                 <div class="card-body">
-                  <h5 class="card-title">Model</h5>
-                  <p class="card-text">Model checkpoint and documentation for our finetuned gpt-j model.</p>
+                  <h5 class="card-title">Models</h5>
+                  <p class="card-text">Model checkpoint and documentation for our finetuned gpt-j and snip-igel models.</p>
                   <a href="https://huggingface.co/snipaid" class="btn btn-secondary">View Repository</a>
                 </div>
               </div>
@@ -155,6 +178,8 @@
           <p>This is a GPT-J model we finetuned from GPT-J-6B-8bit on 10.000 German News Articles, balanced by 10 news categories and randomized over different news publishers and multiple years. You can download the PyTorch model checkpoints <a href="https://huggingface.co/snipaid/gptj-title-teaser-10k" class="link-dark">here</a>. To run the model you need ~11 GB GPU memory.</p>
           <h5>bloomz</h5>
           <p>This is a model from the BLOOMZ series of models capable of following human instructions in dozens of languages in a zero-shot setting. Specific prompts were designed for snippet generation. German language is supported by means of translation. You can download the model <a href="https://miro.com/app/board/uXjVPuvw7NQ=/?moveToWidget=3458764548383030018&cot=14" class="link-dark">here</a>. To run the model you need ~8 GB GPU memory.</p>
+          <h5>snip-igel</h5>
+          <p>This is a instruction-tuned model capable of following human instructions in german language in a zero-shot setting. We continued training the IGEL model, which is a pre-trained, instruction-tuned german BLOOM model, with an instruction dataset with 6 different snippet types.</p>
           <h4>Limitations</h4>
           <h5>Generation specific</h5>
           <p>When generating text with these models please keep in mind, that the statistically most likely next token is often not the token that produces the most "accurate" text. Never depend upon those models to produce factually accurate output! We recommend having a human curate or filter the outputs before releasing them, both to censor undesirable content and to improve the quality of the results. See also <a href="https://huggingface.co/EleutherAI/gpt-j-6B#limitations-and-biases" class="link-dark">limitations and biases</a> of GPT-J.</p>

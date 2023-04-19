@@ -48,7 +48,8 @@ export const handler = async (event, context, callback) => {
 const cleanOutput = (output, genType, model) => {
     // General text cleaning
     output = output.replace('\n', ' ');
-    output = output.replaceAll('\s\s', '\s');
+    output = output.replaceAll('  ', ' ');
+    output = output.replace('<|endoftext|>', '');
     // Model and snippet sepcific cleaning
     if (genType === "headline") {
         if (model === "gptj") {

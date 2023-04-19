@@ -12,6 +12,10 @@ window.onload = function () {
   var teaserDiv = document.getElementById('teaserDiv');
   var summaryDiv = document.getElementById('summaryDiv');
   var keywordsDiv = document.getElementById('keywordsDiv');
+  var serpDiv = document.getElementById('serpDiv');
+  var resSerpTitle = document.getElementById('resSerpTitle');
+  var resSerpDescription = document.getElementById('resSerpDescription');
+  var tweetDiv = document.getElementById('tweetDiv');
   var webhookDiv = document.getElementById('accordion')
   var webhookInput = document.getElementById('webhookInput')
   var sendToWebhook = document.getElementById('sendToWebhook')
@@ -35,6 +39,8 @@ window.onload = function () {
     summaryDiv.classList.add("d-none");
     keywordsDiv.classList.add("d-none");
     webhookDiv.classList.add("d-none");
+    serpDiv.classList.add("d-none");
+    tweetDiv.classList.add("d-none");
   })
 
   // Initialize loading state variables for headline and teaser
@@ -42,6 +48,8 @@ window.onload = function () {
   var isTeaserLoaded = false;
   var isKeywordsLoaded = false;
   var isSummaryLoaded = false;
+  var isSerpLoaded = false;
+  var isTweetLoaded = false;
 
   var setLoading = function(isLoading) {
     if (isLoading) {
@@ -50,7 +58,13 @@ window.onload = function () {
       isTeaserLoaded = false;
       isKeywordsLoaded = false;
       isSummaryLoaded = false;
-      if (model.value == 'gptj') {
+      isSerpLoaded = false;
+      isTweetLoaded = false;
+      if (model.value == 'gptj' || model.value == 'bloomz') {
+        // Set loading indicators for snippets not supported with bloomz and gptj to true for evaluation
+        isSerpLoaded = true;
+        isTweetLoaded = true;
+      } else if (model.value == 'gptj') {
         // Set loading indicators for snippets not supported with gptj to true for evaluation
         isKeywordsLoaded = true;
         isSummaryLoaded = true;
@@ -62,11 +76,13 @@ window.onload = function () {
       teaserDiv.classList.add("d-none");
       summaryDiv.classList.add("d-none");
       keywordsDiv.classList.add("d-none");
+      serpDiv.classList.add("d-none");
+      tweetDiv.classList.add("d-none");
       webhookDiv.classList.add("d-none");
       submitText.classList.add("d-none");
     } else {
       // Evaluate: Is generation done?
-      if (isHeadlineLoaded && isTeaserLoaded && isKeywordsLoaded && isSummaryLoaded) {
+      if (isHeadlineLoaded && isTeaserLoaded && isKeywordsLoaded && isSummaryLoaded && isSerpLoaded && isTweetLoaded) {
         // Generation is done, hide laoding indicator
         loadingDiv.classList.add("d-none");
         // Show webhook and allow new text submission
@@ -109,6 +125,40 @@ window.onload = function () {
     keywordsDiv.classList.remove('d-none')
   }
 
+  var updateSerp = (serp) => {
+    console.log("Generated serp:", serp);
+    isSerpLoaded = true;
+
+    // Split SERP into title tag and meta description
+    serp = serp.replace("\n", "");
+    serp = serp.replace("Title-Tag:", "");
+
+    console.log("Serp-Text before split:", serp)
+
+    splits = serp.split("Meta-Description:");
+    var serpTitle = splits[0]
+    var serpDescription = splits[1]
+
+    serpTitle = serpTitle.replace("|", "").trim()
+    serpDescription = serpDescription.trim()
+
+    console.log("Serp-Title after split:", serpTitle)
+    console.log("Serp-Desc after split:", serpDescription)
+
+    resSerpTitle.value = serpTitle; 
+    resSerpDescription.value = serpDescription;
+    setLoading(false);
+    serpDiv.classList.remove('d-none')
+  }
+
+  var updateTweet = (tweet) => {
+    console.log("Generated tweet:", tweet);
+    isTweetLoaded = true;
+    resTweet.value = tweet;
+    setLoading(false);
+    tweetDiv.classList.remove('d-none')
+  }
+
   var update = (output, genType) => {
     switch (genType) {
       case 'headline':
@@ -122,6 +172,12 @@ window.onload = function () {
         break;
       case 'keywords':
         updateKeywords(output)
+        break;
+      case 'serp':
+        updateSerp(output)
+        break;
+      case 'tweet':
+        updateTweet(output)
         break;
       default:
         console.log(`Sorry, the snippet type ${genType} is not supported.`);
@@ -169,6 +225,11 @@ window.onload = function () {
         "fulltext": fulltext,
         "gen_type": genType
       }))
+    } else if (model === "snip-igel") {
+      return fetch('/.netlify/functions/generate-igel?' + new URLSearchParams({
+        "fulltext": fulltext,
+        "gen_type": genType
+      }))
     }
   }
 
@@ -195,7 +256,7 @@ window.onload = function () {
       //textBlock.innerHTML = "Sorry the request failed"
     }
 
-    if (model.value === 'bloomz') {
+    if (model.value === 'bloomz' || model.value === "snip-igel") {
       try {
         console.log("Generate summary...")
         const summaryResponse = await generate(articleInput.value, "summary", model.value);
@@ -210,6 +271,26 @@ window.onload = function () {
         const keywordResponse = await generate(articleInput.value, "keywords", model.value);
         const data = await keywordResponse.json()
         checkResult(data.callID, "keywords", model.value)
+      } catch (err) {
+        //textBlock.innerHTML = "Sorry the request failed"
+      }
+    }
+
+    if (model.value === "snip-igel") {
+      try {
+        console.log("Generate serp...")
+        const serpResponse = await generate(articleInput.value, "serp", model.value);
+        const data = await serpResponse.json()
+        checkResult(data.callID, "serp", model.value)
+      } catch (err) {
+        //textBlock.innerHTML = "Sorry the request failed"
+      }
+  
+      try {
+        console.log("Generate tweet...")
+        const tweetResponse = await generate(articleInput.value, "tweet", model.value);
+        const data = await tweetResponse.json()
+        checkResult(data.callID, "tweet", model.value)
       } catch (err) {
         //textBlock.innerHTML = "Sorry the request failed"
       }
@@ -258,7 +339,7 @@ window.onload = function () {
         body: JSON.stringify({
           "fulltext": articleInput.value,
           "title": resHeadline.value,
-          "teaser": resTeaser.value
+          "teaser": resTeaser.value,
         })
       });
     alertWebhookStatus(response.status);
