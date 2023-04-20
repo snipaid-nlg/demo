@@ -39,7 +39,7 @@ const templates = {
         prompt: "Generiere eine SERP (Title-Tag und Meta-Description) für den folgenden Inhalt.",
         params: {
             min_new_tokens: 50,
-            max_new_tokens: 150,
+            max_new_tokens: 90,
         }
     },
     tweet: {
