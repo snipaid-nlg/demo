@@ -132,23 +132,14 @@ window.onload = function () {
     // Split SERP into title tag and meta description
     serp = serp.replace("\n", "");
     serp = serp.replace("Title-Tag:", "");
-
-    console.log("Serp-Text before split:", serp)
-
-    splits = serp.split("Meta-Description:");
-    var serpTitle = splits[0]
-    var serpDescription = splits[1]
-
-    serpTitle = serpTitle.replace("|", "").trim()
-    serpDescription = serpDescription.trim()
-
-    console.log("Serp-Title after split:", serpTitle)
-    console.log("Serp-Desc after split:", serpDescription)
+    var [serpTitle, serpDescription] = serp.split("Meta-Description:");
+    serpTitle = serpTitle.replace("|", "").trim();
+    serpDescription = serpDescription.trim();
 
     resSerpTitle.value = serpTitle; 
     resSerpDescription.value = serpDescription;
     setLoading(false);
-    serpDiv.classList.remove('d-none')
+    serpDiv.classList.remove('d-none');
   }
 
   var updateTweet = (tweet) => {
